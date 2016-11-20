@@ -23,7 +23,7 @@ public extension ObservableType where E == Moya.Response {
      
      - returns: returns Observable of mapped objects
      */
-    public func mapObject<T: Decodable where T == T.DecodedType>(type: T.Type, rootKey: String? = nil) -> Observable<T> {
+    public func mapObject<T: Decodable>(_ type: T.Type, rootKey: String? = nil) -> Observable<T> where T == T.DecodedType {
         
         return Observable.create { observer in
             
@@ -31,11 +31,11 @@ public extension ObservableType where E == Moya.Response {
             self.subscribe { event in
                 
                 switch event {
-                case .Next(let response):
+                case .next(let response):
                     observer.onNextOrError { try response.mapObject(rootKey) }
-                case .Error(let error):
+                case .error(let error):
                     observer.onError(error)
-                case .Completed:
+                case .completed:
                     observer.onCompleted()
                 }
             }
@@ -44,12 +44,12 @@ public extension ObservableType where E == Moya.Response {
     
     /// Alternative for mapping object without specifying type as argument
     /// This means type needs to be specified at use
-    public func mapObject<T: Decodable where T == T.DecodedType>(rootKey: String? = nil) -> Observable<T> {
+    public func mapObject<T: Decodable>(_ rootKey: String? = nil) -> Observable<T> where T == T.DecodedType {
         return mapObject(T.self, rootKey: rootKey)
     }
     
     /// Convenience method for mapping object with root key, accepts non optional root key for some type checking
-    public func mapObjectWithRootKey<T: Decodable where T == T.DecodedType>(type: T.Type, rootKey: String) -> Observable<T> {
+    public func mapObjectWithRootKey<T: Decodable>(_ type: T.Type, rootKey: String) -> Observable<T> where T == T.DecodedType {
         return mapObject(type, rootKey: rootKey)
     }
     
@@ -61,7 +61,7 @@ public extension ObservableType where E == Moya.Response {
      
      - returns: returns Observable of mapped object array
      */
-    public func mapArray<T: Decodable where T == T.DecodedType>(type: T.Type, rootKey: String? = nil) -> Observable<[T]> {
+    public func mapArray<T: Decodable>(_ type: T.Type, rootKey: String? = nil) -> Observable<[T]> where T == T.DecodedType {
         
         return Observable.create { observer in
             
@@ -69,11 +69,11 @@ public extension ObservableType where E == Moya.Response {
             self.subscribe { event in
                 
                 switch event {
-                case .Next(let response):
+                case .next(let response):
                     observer.onNextOrError { try response.mapArray(rootKey) }
-                case .Error(let error):
+                case .error(let error):
                     observer.onError(error)
-                case .Completed:
+                case .completed:
                     observer.onCompleted()
                 }
             }
@@ -82,12 +82,12 @@ public extension ObservableType where E == Moya.Response {
     
     /// Alternative for mapping object array without specifying type as argument
     /// This means type needs to be specified at use
-    public func mapArray<T: Decodable where T == T.DecodedType>(rootKey: String? = nil) -> Observable<[T]> {
+    public func mapArray<T: Decodable>(_ rootKey: String? = nil) -> Observable<[T]> where T == T.DecodedType {
         return mapArray(T.self, rootKey: rootKey)
     }
     
     /// Convenience method for mapping object array with root key, accepts non optional root key for some type checking
-    public func mapArrayWithRootKey<T: Decodable where T == T.DecodedType>(type: T.Type, rootKey: String) -> Observable<[T]> {
+    public func mapArrayWithRootKey<T: Decodable>(_ type: T.Type, rootKey: String) -> Observable<[T]> where T == T.DecodedType {
         return mapArray(type, rootKey: rootKey)
     }
 
@@ -96,7 +96,7 @@ public extension ObservableType where E == Moya.Response {
 private extension AnyObserver {
     
     /// convenience method calling either on(.Next) or on(.Error) depending if a function throws an error or returns a value
-    private func onNextOrError(function: () throws -> Element) {
+    func onNextOrError(_ function: () throws -> Element) {
         do {
             let value = try function()
             self.onNext(value)

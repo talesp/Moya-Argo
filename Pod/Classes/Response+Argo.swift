@@ -22,7 +22,7 @@ public extension Response {
      
      - returns: returns a decoded object
      */
-    public func mapObject<T:Decodable where T == T.DecodedType>(rootKey: String? = nil) throws -> T {
+    public func mapObject<T:Decodable>(_ rootKey: String? = nil) throws -> T where T == T.DecodedType {
         
         do {
             //map to JSON (even if it's wrapped it's still a dict)
@@ -46,7 +46,7 @@ public extension Response {
     }
     
     /// Convenience method for mapping an object with a root key
-    public func mapObjectWithRootKey<T:Decodable where T == T.DecodedType>(rootKey: String) throws -> T {
+    public func mapObjectWithRootKey<T:Decodable>(_ rootKey: String) throws -> T where T == T.DecodedType {
         
         return try mapObject(rootKey)
     }
@@ -60,7 +60,7 @@ public extension Response {
      
      - returns: returns an array of decoded object
      */
-    public func mapArray<T:Decodable where T == T.DecodedType>(rootKey: String? = nil) throws -> [T] {
+    public func mapArray<T:Decodable>(_ rootKey: String? = nil) throws -> [T] where T == T.DecodedType {
         
         do {
             //map to JSON
@@ -75,7 +75,7 @@ public extension Response {
             } else {
                 //no root key, it's an array
                 guard let array = try JSON as? [AnyObject] else {
-                    throw DecodeError.TypeMismatch(expected: "\(T.DecodedType.self)", actual: "\(JSON.dynamicType)")
+                    throw DecodeError.typeMismatch(expected: "\(T.DecodedType.self)", actual: "\(type(of: JSON))")
                 }
                 decodedArray = decode(array)
             }
@@ -90,7 +90,7 @@ public extension Response {
     }
     
     /// Convenience method for mapping an array with a root key
-    public func mapArrayWithRootKey<T:Decodable where T == T.DecodedType>(rootKey: String) throws -> [T] {
+    public func mapArrayWithRootKey<T:Decodable>(_ rootKey: String) throws -> [T] where T == T.DecodedType {
         
         return try mapArray(rootKey)
     }
@@ -104,12 +104,12 @@ public extension Response {
      
      - returns: returns the decoded value if decoding was successful
      */
-    private func decodedValue<T>(decoded: Decoded<T>) throws -> T {
+    fileprivate func decodedValue<T>(_ decoded: Decoded<T>) throws -> T {
         
         switch decoded {
-        case .Success(let value):
+        case .success(let value):
             return value
-        case .Failure(let error):
+        case .failure(let error):
             throw error
         }
     }

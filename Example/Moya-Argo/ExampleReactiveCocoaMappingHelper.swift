@@ -7,19 +7,19 @@
 //
 
 import Foundation
-import ReactiveCocoa
+import ReactiveSwift
 import Moya
 import Argo
 
-extension SignalProducerType where Value == Moya.Response, Error == Moya.Error {
+extension SignalProducerProtocol where Value == Moya.Response, Error == Moya.Error {
     
-    func mapUsers() -> SignalProducer<[ArgoUser], Error> {
+    func mapUsers() -> SignalProducer<[ArgoUser], Moya.Error> {
         
         return mapArray(ArgoUser.self, rootKey: "users")
     }
     
-    func mapUser() -> SignalProducer<ArgoUser, Error> {
+    func mapUser() -> SignalProducer<ArgoUser, Moya.Error> {
         
-        return mapObject(ArgoUser)
+        return mapObject(ArgoUser.self)
     }
 }
